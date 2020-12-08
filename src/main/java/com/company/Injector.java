@@ -7,16 +7,16 @@ import java.util.Properties;
 public class Injector {
 
     public <T> T inject(T obj){
-        Class<?> aClass = obj.getClass(); // Преобразуем объект в класс
-        Properties properties = new Properties(); // Подключчаем injector.properties
+        Class<?> aClass = obj.getClass(); 
+        Properties properties = new Properties(); 
         try {
             properties.load(getClass().getResourceAsStream("/injector.properties"));
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        for(Field field : aClass.getDeclaredFields()) { // Проходим по всем полям
-            field.setAccessible(true); // изменяем, для возможности работать с приватными полями
+        for(Field field : aClass.getDeclaredFields()) { 
+            field.setAccessible(true); 
             try {
                 if (field.getAnnotation(AutoInjectable.class) != null && field.get(obj) == null) {
                     field.set(obj, Class.forName(properties.getProperty(field.getType().getName())).getDeclaredConstructor().newInstance());
